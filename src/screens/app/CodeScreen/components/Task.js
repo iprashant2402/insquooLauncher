@@ -17,48 +17,70 @@ const Task = ({
   isCompleted,
 }) => {
   return (
-    <View
-      key={index}
-      style={[
-        styles.container,
-        theme === 'dark' && !isCompleted && darkTheme.cardBackground, theme === 'light' && !isCompleted && lightTheme.border,
-      ]}>
-      <View style={styles.row}>
-      <View style={styles.right}>
-          <TouchableOpacity>
-            <Fontisto name={isCompleted ? 'checkbox-active' : 'checkbox-passive'} size={12} color={theme === 'dark' ? dark.primaryText : light.primaryText} />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.left}>
+    <>
+      {priority && (
+        <View style={[styles.topWrapper]}>
           <Text
             style={[
-              styles.title,
-              theme === 'dark'
-                ? darkTheme.secondaryText
-                : lightTheme.primaryText,
-                isCompleted && styles.completed
+              styles.h1,
+              theme === 'dark' ? darkTheme.primaryText : lightTheme.primaryText,
             ]}>
-            {title}
+            {`${priority} priority`}
           </Text>
         </View>
-        <View style={styles.right}>
-          <TouchableOpacity>
-            <Ionicons name={'remove-circle'} size={16} color={colors.google_red} />
-          </TouchableOpacity>
-        </View>
-      </View>
-      {desc && (
-        <Text
-          style={[
-            styles.desc,
-            theme === 'dark'
-              ? darkTheme.secondaryText
-              : lightTheme.secondaryText,
-          ]}>
-          {desc}
-        </Text>
       )}
-    </View>
+      <View
+        key={index}
+        style={[
+          styles.container,
+          theme === 'dark' && !isCompleted && darkTheme.cardBackground,
+          theme === 'light' && !isCompleted && lightTheme.border,
+        ]}>
+        <View style={styles.row}>
+          <View style={styles.right}>
+            <TouchableOpacity onPress={onCompleted}>
+              <Fontisto
+                name={isCompleted ? 'checkbox-active' : 'checkbox-passive'}
+                size={12}
+                color={theme === 'dark' ? dark.primaryText : light.primaryText}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.left}>
+            <Text
+              style={[
+                styles.title,
+                theme === 'dark'
+                  ? darkTheme.secondaryText
+                  : lightTheme.primaryText,
+                isCompleted && styles.completed,
+              ]}>
+              {title}
+            </Text>
+          </View>
+          <View style={styles.right}>
+            <TouchableOpacity onPress={onDelete}>
+              <Ionicons
+                name={'remove-circle'}
+                size={16}
+                color={colors.google_red}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+        {desc && (
+          <Text
+            style={[
+              styles.desc,
+              theme === 'dark'
+                ? darkTheme.secondaryText
+                : lightTheme.secondaryText,
+            ]}>
+            {desc}
+          </Text>
+        )}
+      </View>
+    </>
   );
 };
 
@@ -68,6 +90,15 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: fonts.primary_semibold,
     fontSize: ScreenHeight / 48,
+  },
+  h1: {
+    fontFamily: fonts.primary_bold,
+    fontSize: ScreenHeight / 44,
+    textTransform: 'capitalize',
+  },
+  topWrapper: {
+    marginTop: 22,
+    marginBottom: 4,
   },
   desc: {
     fontFamily: fonts.primary,
@@ -92,6 +123,6 @@ const styles = StyleSheet.create({
     marginRight: 4,
   },
   completed: {
-      textDecorationLine: 'line-through'
-  }
+    textDecorationLine: 'line-through',
+  },
 });

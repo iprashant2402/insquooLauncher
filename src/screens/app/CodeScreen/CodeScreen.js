@@ -8,6 +8,31 @@ import AddNewTask from './components/AddNewTask';
 import Task from './components/Task';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {dark, light} from '../../../colors/colors';
+import {getTasks, storeTasks} from '../../../utils/storage';
+
+const sortByPriority = arr => {
+  const high = [];
+  const low = [];
+  const medium = [];
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i].priority === 'high') {
+      high.push(arr[i]);
+    } else if (arr[i].priority === 'medium') {
+      medium.push(arr[i]);
+    } else {
+      low.push(arr[i]);
+    }
+  }
+  return [...high, ...medium, ...low];
+};
+
+const shouldGroupByPriority = (t1, t2) => {
+  if (t1?.priority === t2?.priority) {
+    return true;
+  } else {
+    return false;
+  }
+};
 
 const CodeScreen = () => {
   const themeContext = React.useContext(ThemeContext);
@@ -18,9 +43,37 @@ const CodeScreen = () => {
   const [newDesc, setNewDesc] = React.useState(null);
   const [newPriority, setNewPriority] = React.useState('medium');
   const [tasks, setTasks] = React.useState([]);
+
+  const fetchTasksFromLocal = async () => {
+    const res = await getTasks();
+    if (res) {
+      setTasks(res);
+    } else {
+      setTasks([]);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchTasksFromLocal();
+  }, []);
+
   const toggleTab = tab => {
     setActiveTab(tab);
   };
+
+  const markAsComplete = index => {
+    setTasks(prev => {
+      const temp = prev.map((l, i) => {
+        if (i === index) {
+          l.isCompleted = !l.isCompleted;
+        }
+        return l;
+      });
+      storeTasks(temp);
+      return temp;
+    });
+  };
+
   const createTask = () => {
     if (newTitle && newTitle !== '') {
       const temp = {
@@ -33,9 +86,21 @@ const CodeScreen = () => {
         setNewDesc(null);
         setNewTitle(null);
         setNewTaskModal(false);
-        return [...prev, temp];
+        const taskArr = [...prev, temp];
+        const sortedArr = sortByPriority(taskArr);
+        storeTasks(sortedArr);
+        return sortedArr;
       });
     }
+  };
+
+  const deleteTask = i => {
+    setTasks(prev => {
+      prev[i].title = null;
+      const temp = prev.filter(item => item.title !== null);
+      storeTasks(temp);
+      return temp;
+    });
   };
   return (
     <View
@@ -91,11 +156,18 @@ const CodeScreen = () => {
         {tasks.map((task, i) => (
           <Task
             theme={theme}
-            title={task.title}
-            desc={task.desc}
+            onCompleted={() => markAsComplete(i)}
+            title={task?.title}
+            desc={task?.desc}
+            priority={
+              !shouldGroupByPriority(tasks[i], tasks[i - 1])
+                ? task.priority
+                : null
+            }
             key={i}
             index={i}
-            isCompleted={task.isCompleted}
+            isCompleted={task?.isCompleted}
+            onDelete={() => deleteTask(i)}
           />
         ))}
       </ScrollView>
@@ -109,8 +181,10 @@ const CodeScreen = () => {
         theme={theme}
         title={newTitle}
         desc={newDesc}
+        priority={newPriority}
         onChangeDesc={text => setNewDesc(text)}
         onChangeTitle={text => setNewTitle(text)}
+        onChangePriority={value => setNewPriority(value)}
         onSubmit={createTask}
       />
     </View>

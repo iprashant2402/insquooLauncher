@@ -12,6 +12,7 @@ import {darkTheme, lightTheme} from '../../../../colors/theme';
 import {ScreenHeight, ScreenWidth} from '../../../../utils/Dimensions';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Button from '../../../../components/Button/Button';
+import {Picker} from '@react-native-picker/picker';
 
 const AddNewTask = ({
   modalVisible,
@@ -19,8 +20,10 @@ const AddNewTask = ({
   theme = 'dark',
   title,
   desc,
+  priority,
   onChangeDesc,
   onChangeTitle,
+  onChangePriority,
   onSubmit,
 }) => {
   return (
@@ -89,6 +92,61 @@ const AddNewTask = ({
                 numberOfLines={3}
               />
             </View>
+            <View>
+              <Text
+                style={[
+                  styles.label,
+                  theme === 'dark'
+                    ? darkTheme.primaryText
+                    : lightTheme.primaryText,
+                ]}>
+                Choose priority
+              </Text>
+              <View style={[styles.row]}>
+                <TouchableOpacity
+                  onPress={() => onChangePriority('high')}
+                  style={[
+                    styles.option,
+                    priority === 'high' && styles.activeOption,
+                  ]}>
+                  <Text
+                    style={[
+                      styles.optionText,
+                      priority === 'high' && darkTheme.primaryText,
+                    ]}>
+                    High
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => onChangePriority('medium')}
+                  style={[
+                    styles.option,
+                    priority === 'medium' && styles.activeOption,
+                  ]}>
+                  <Text
+                    style={[
+                      styles.optionText,
+                      priority === 'medium' && darkTheme.primaryText,
+                    ]}>
+                    Medium
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => onChangePriority('low')}
+                  style={[
+                    styles.option,
+                    priority === 'low' && styles.activeOption,
+                  ]}>
+                  <Text
+                    style={[
+                      styles.optionText,
+                      priority === 'low' && darkTheme.primaryText,
+                    ]}>
+                    Low
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
           <View style={styles.btnWrapper}>
             <Button
@@ -109,6 +167,10 @@ export default AddNewTask;
 const styles = StyleSheet.create({
   container: {
     padding: 16,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   },
   btnWrapper: {
     paddingVertical: 24,
@@ -142,5 +204,24 @@ const styles = StyleSheet.create({
   textbox: {
     padding: 12,
     borderRadius: 2,
+  },
+  label: {
+    fontFamily: fonts.primary,
+    marginVertical: 8,
+  },
+  option: {
+    paddingHorizontal: 12,
+    paddingVertical: 2,
+    borderColor: colors.primary,
+    borderWidth: 1,
+    borderRadius: 12,
+  },
+  activeOption: {
+    backgroundColor: colors.primary_background,
+  },
+  optionText: {
+    fontFamily: fonts.primary,
+    color: colors.primary,
+    fontSize: ScreenWidth / 32,
   },
 });

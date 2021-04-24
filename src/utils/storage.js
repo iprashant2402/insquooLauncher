@@ -44,3 +44,26 @@ export const getTheme = async () => {
     return null;
   }
 };
+
+export const storeTasks = async tasks => {
+  try {
+    const temp = JSON.stringify(tasks);
+    const res = await AsyncStorage.setItem('@tasks', temp);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+export const getTasks = async () => {
+  try {
+    const res = await AsyncStorage.getItem('@tasks');
+    if (res !== null) {
+      return JSON.parse(res);
+    } else {
+      return null;
+    }
+  } catch (e) {
+    return null;
+  }
+};
