@@ -11,11 +11,11 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
-    width: '90%',
+    width: '86%',
     padding: 12,
   },
   btn: {
-    width: '10%',
+    width: '14%',
     paddingLeft: 16,
     borderRightWidth: 0,
     borderRadius: 50,

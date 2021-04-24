@@ -18,7 +18,7 @@ export const light = {
   card: '#242526',
   hover: '#3A3B3C',
   primaryText: '#18191a',
-  secondaryText: '#B0B3B8',
+  secondaryText: '#4d5156',
 };
 
 export const fonts = {

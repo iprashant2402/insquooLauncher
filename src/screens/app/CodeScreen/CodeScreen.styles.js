@@ -19,9 +19,10 @@ const styles = StyleSheet.create({
   },
   topBar: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   tabWrapper: {
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     padding: 12,
   },
 });

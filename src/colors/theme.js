@@ -54,5 +54,6 @@ export const darkTheme = {
   },
   border: {
     borderColor: colors.white,
+    borderWidth: 1,
   },
 };
