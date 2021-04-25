@@ -16,12 +16,15 @@ import {ScreenHeight} from '../../../utils/Dimensions';
 import {InstalledApps} from '../../../utils/InstalledApps';
 import AddAppsSheet from './Components/AddAppsSheet';
 import {getStarredApps, storeStarredApps} from '../../../utils/storage';
+import {getDateTime} from '../../../utils/dateTime';
 
 const HomeScreen = ({navigation}) => {
   const themeContext = React.useContext(ThemeContext);
   const {theme, updateTheme} = themeContext;
   const [editMode, setEditMode] = React.useState(false);
   const [addAppSheet, setAddAppSheet] = React.useState(false);
+  const [time, setTime] = React.useState(null);
+  const [date, setDate] = React.useState(null);
   const [apps, setApps] = React.useState([]);
   const _handleOpenApp = app => {
     if (!editMode) {
@@ -46,6 +49,23 @@ const HomeScreen = ({navigation}) => {
 
   React.useEffect(() => {
     fetchApps();
+  }, []);
+
+  React.useEffect(() => {
+    const res = getDateTime();
+    if (res && res.time && res.date) {
+      setTime(res?.time);
+      setDate(res?.date);
+    }
+    const tick = setInterval(() => {
+      const res = getDateTime();
+      if (res && res.time && res.date) {
+        setTime(res?.time);
+        setDate(res?.date);
+      }
+    }, 60000);
+
+    return () => clearInterval(tick);
   }, []);
 
   const getApps = () => {
@@ -92,7 +112,7 @@ const HomeScreen = ({navigation}) => {
                   ? darkTheme.primaryText
                   : lightTheme.primaryText,
               ]}>
-              11:00 am
+              {time}
             </Text>
             <Text
               style={[
@@ -101,7 +121,7 @@ const HomeScreen = ({navigation}) => {
                   ? darkTheme.primaryText
                   : lightTheme.primaryText,
               ]}>
-              Sun, 18 Apr
+              {date}
             </Text>
           </View>
           <View>
