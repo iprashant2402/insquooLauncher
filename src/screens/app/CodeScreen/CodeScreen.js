@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, ScrollView} from 'react-native';
+import {View, Text, TouchableOpacity, ScrollView, SafeAreaView} from 'react-native';
 import {darkTheme, lightTheme} from '../../../colors/theme';
 import {ThemeContext} from '../../../context/auth/ThemeContext';
 import {ScreenHeight} from '../../../utils/Dimensions';
@@ -103,7 +103,7 @@ const CodeScreen = () => {
     });
   };
   return (
-    <View
+    <SafeAreaView
       style={[
         styles.container,
         theme === 'dark' ? darkTheme.background : lightTheme.background,
@@ -187,7 +187,7 @@ const CodeScreen = () => {
         onChangePriority={value => setNewPriority(value)}
         onSubmit={createTask}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 

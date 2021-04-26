@@ -56,7 +56,7 @@ const AddAppsSheet = ({
     setAppsValue(temp);
   }, [apps]);
   const _handleOnPress = (newValue, i, app) => {
-    if ((newValue && countApps(appsValue) < 5) || !newValue) {
+    if ((newValue && countApps(appsValue) < 7) || !newValue) {
       const temp = appsValue.slice();
       temp[i] = newValue;
       setAppsValue(temp);
@@ -104,7 +104,7 @@ const AddAppsSheet = ({
               styles.subtitle,
               theme === 'dark' ? darkTheme.primaryText : lightTheme.primaryText,
             ]}>
-            Select upto 5 apps to add to Home.
+            Select upto 7 apps to add to Home.
           </Text>
         </View>
         <ScrollView style={styles.appList}>

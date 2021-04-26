@@ -23,7 +23,7 @@ import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Base64;
-
+import com.facebook.react.bridge.Callback;
 
 public class InstalledAppsModule extends ReactContextBaseJavaModule {
 
@@ -64,7 +64,7 @@ public class InstalledAppsModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    private String getApps(){
+    private void getApps(Callback callBack){
         List<AppDetail> apps = new ArrayList<>();
         List<PackageInfo> packages = this.reactContext
             .getPackageManager()
@@ -79,8 +79,8 @@ public class InstalledAppsModule extends ReactContextBaseJavaModule {
                 apps.add(app);
             }
         }
-        return apps.toString();
-
+        String appsFinalList = apps.toString();
+        callBack.invoke(null, appsFinalList);
     }
 
     private List<String> getAllApps() {
@@ -117,12 +117,12 @@ public class InstalledAppsModule extends ReactContextBaseJavaModule {
         }
     }
 
-    @Override
-    public @Nullable Map<String, Object> getConstants() {
-        Map<String, Object> constants = new HashMap<>();
+    // @Override
+    // public @Nullable Map<String, Object> getConstants() {
+    //     Map<String, Object> constants = new HashMap<>();
 
-        constants.put("getApps", getApps());
-        constants.put("getNonSystemApps", getNonSystemApps());
-        return constants;
-    }
+    //     constants.put("getApps", getApps());
+    //     constants.put("getNonSystemApps", getNonSystemApps());
+    //     return constants;
+    // }
 }

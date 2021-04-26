@@ -1,5 +1,11 @@
 import React from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  SafeAreaView,
+  StatusBar,
+} from 'react-native';
 import Button from '../../../components/Button/Button';
 import styles from './HomeScreen.styles';
 import {ThemeContext} from '../../../context/auth/ThemeContext';
@@ -26,6 +32,8 @@ const HomeScreen = ({navigation}) => {
   const [time, setTime] = React.useState(null);
   const [date, setDate] = React.useState(null);
   const [apps, setApps] = React.useState([]);
+  const [fullAppList, setFullAppList] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
   const _handleOpenApp = app => {
     if (!editMode) {
       InstalledApps.launchApplication(app);
@@ -44,11 +52,13 @@ const HomeScreen = ({navigation}) => {
     const temp = await getStarredApps();
     if (temp) {
       setApps(temp);
+      setLoading(false);
     }
   };
 
   React.useEffect(() => {
     fetchApps();
+    getApps();
   }, []);
 
   React.useEffect(() => {
@@ -69,17 +79,21 @@ const HomeScreen = ({navigation}) => {
   }, []);
 
   const getApps = () => {
-    const temp = JSON.parse(InstalledApps.getApps);
-    temp.sort(function (a, b) {
-      if (a.label < b.label) {
-        return -1;
+    InstalledApps.getApps((error, appsList) => {
+      if (appsList) {
+        const temp = JSON.parse(appsList);
+        temp.sort(function (a, b) {
+          if (a.label < b.label) {
+            return -1;
+          }
+          if (a.label > b.label) {
+            return 1;
+          }
+          return 0;
+        });
+        setFullAppList(temp);
       }
-      if (a.label > b.label) {
-        return 1;
-      }
-      return 0;
     });
-    return temp;
   };
 
   const addApp = app => {
@@ -98,14 +112,19 @@ const HomeScreen = ({navigation}) => {
 
   return (
     <>
-      <View
+      <SafeAreaView
         style={[
           styles.container,
           theme === 'dark' ? darkTheme.background : lightTheme.background,
         ]}>
+        <StatusBar
+          hidden={false}
+          barStyle={theme === 'dark' ? 'light-content' : 'dark-content'}
+          backgroundColor={theme === 'dark' ? '#000' : light.background}
+        />
         <View style={[styles.clockContainer]}>
           <View>
-            <Text
+            {/* <Text
               style={[
                 styles.time,
                 theme === 'dark'
@@ -113,7 +132,7 @@ const HomeScreen = ({navigation}) => {
                   : lightTheme.primaryText,
               ]}>
               {time}
-            </Text>
+            </Text> */}
             <Text
               style={[
                 styles.date,
@@ -171,7 +190,8 @@ const HomeScreen = ({navigation}) => {
               </Text>
             </TouchableOpacity>
           ))}
-          {(apps?.length === 0 || (editMode && apps?.length < 5)) && (
+          {((apps?.length === 0 && !loading) ||
+            (editMode && apps?.length < 7)) && (
             <TouchableOpacity
               onPress={() => setAddAppSheet(true)}
               style={styles.appListItem}>
@@ -234,7 +254,7 @@ const HomeScreen = ({navigation}) => {
             </View>
           </View>
         </View>
-      </View>
+      </SafeAreaView>
       <AddAppsSheet
         close={() => {
           setAddAppSheet(false);
@@ -242,7 +262,7 @@ const HomeScreen = ({navigation}) => {
         }}
         addApp={addApp}
         removeApp={removeApp}
-        apps={getApps()}
+        apps={fullAppList}
         starredApps={apps}
         theme={theme}
         modalVisible={addAppSheet}

@@ -4,6 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import Routes from './src/routes/routes';
 import {ThemeProvider} from './src/context/auth/ThemeContext';
 import {getTheme, storeTheme} from './src/utils/storage';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function App() {
   const [theme, setTheme] = React.useState('dark');
@@ -30,7 +31,9 @@ export default function App() {
         theme,
         updateTheme,
       }}>
-      <NavigationContainer>{!loading && <Routes />}</NavigationContainer>
+      <SafeAreaProvider>
+        <NavigationContainer>{!loading && <Routes />}</NavigationContainer>
+      </SafeAreaProvider>
     </ThemeProvider>
   );
 }

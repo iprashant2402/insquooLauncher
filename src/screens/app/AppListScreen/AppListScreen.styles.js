@@ -14,8 +14,8 @@ const styles = StyleSheet.create({
     height: 42,
   },
   text: {
-    fontFamily: fonts.primary,
-    fontSize: ScreenWidth / 32,
+    fontFamily: fonts.primary_semibold,
+    fontSize: ScreenWidth / 28,
   },
   appListItem: {
     padding: 10,

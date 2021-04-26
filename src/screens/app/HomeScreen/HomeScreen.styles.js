@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     fontSize: ScreenHeight / 56,
   },
   text: {
-    fontFamily: fonts.primary_semibold,
+    fontFamily: fonts.primary_bold,
     fontSize: ScreenHeight / 24,
   },
   bottomText: {
