@@ -118,149 +118,160 @@ const HomeScreen = ({navigation}) => {
           styles.container,
           theme === 'dark' ? darkTheme.background : lightTheme.background,
         ]}>
-        <StatusBar
-          hidden={!settings?.showStatusBar}
-          barStyle={theme === 'dark' ? 'light-content' : 'dark-content'}
-          backgroundColor={theme === 'dark' ? '#000' : light.background}
-        />
-        <View style={[styles.clockContainer]}>
-          <View>
-            {settings?.showTime && (
-              <Text
-                style={[
-                  styles.time,
-                  theme === 'dark'
-                    ? darkTheme.primaryText
-                    : lightTheme.primaryText,
-                ]}>
-                {time}
-              </Text>
-            )}
-            {settings?.showDate && (
-              <Text
-                style={[
-                  styles.date,
-                  theme === 'dark'
-                    ? darkTheme.primaryText
-                    : lightTheme.primaryText,
-                ]}>
-                {date}
-              </Text>
-            )}
-          </View>
-          <View>
-            <Button
-              clear
-              theme={theme}
-              icon={
-                <Icon
-                  //name={theme === 'dark' ? 'light-down' : 'light-up'}
-                  name="ios-ellipsis-horizontal"
-                  size={30}
-                  color={
-                    theme === 'dark' ? colors.white : colors.primary_background
-                  }
-                />
-              }
-              onclick={() => navigation.navigate('Settings')}
-              //onclick={() => updateTheme(theme === 'light' ? 'dark' : 'light')}
-            />
-          </View>
-        </View>
-        <View style={[styles.appList]}>
-          {apps.map((app, i) => (
-            <TouchableOpacity
-              onLongPress={handleLongPress}
-              onPress={() => _handleOpenApp(app.name)}
-              key={i}
-              style={styles.appListItem}>
-              {editMode && (
-                <TouchableOpacity onPress={() => removeApp(app)}>
-                  <Ionicons
-                    name="md-remove-circle"
-                    size={ScreenHeight / 18}
+        <TouchableOpacity
+          style={{flex: 1}}
+          onPress={() => setEditMode(false)}
+          onLongPress={() => setEditMode(true)}
+          activeOpacity={1}>
+          <StatusBar
+            hidden={!settings?.showStatusBar}
+            barStyle={theme === 'dark' ? 'light-content' : 'dark-content'}
+            backgroundColor={theme === 'dark' ? '#000' : light.background}
+          />
+          <View style={[styles.clockContainer]}>
+            <View>
+              {settings?.showTime && (
+                <Text
+                  style={[
+                    styles.time,
+                    theme === 'dark'
+                      ? darkTheme.primaryText
+                      : lightTheme.primaryText,
+                  ]}>
+                  {time}
+                </Text>
+              )}
+              {settings?.showDate && (
+                <Text
+                  style={[
+                    styles.date,
+                    theme === 'dark'
+                      ? darkTheme.primaryText
+                      : lightTheme.primaryText,
+                  ]}>
+                  {date}
+                </Text>
+              )}
+            </View>
+            <View>
+              <Button
+                clear
+                theme={theme}
+                icon={
+                  <Icon
+                    //name={theme === 'dark' ? 'light-down' : 'light-up'}
+                    name="ios-ellipsis-horizontal"
+                    size={30}
                     color={
-                      theme === 'dark' ? dark.primaryText : light.primaryText
+                      theme === 'dark'
+                        ? colors.white
+                        : colors.primary_background
                     }
                   />
-                </TouchableOpacity>
-              )}
-              <Text
-                style={[
-                  styles.text,
-                  editMode && {marginLeft: 8},
-                  theme === 'dark'
-                    ? darkTheme.primaryText
-                    : lightTheme.primaryText,
-                ]}>
-                {app.label}
-              </Text>
-            </TouchableOpacity>
-          ))}
-          {((apps?.length === 0 && !loading) ||
-            (editMode && apps?.length < 7)) && (
-            <TouchableOpacity
-              onPress={() => setAddAppSheet(true)}
-              style={styles.appListItem}>
-              <Ionicons
-                name="add"
-                size={ScreenHeight / 18}
-                color={theme === 'dark' ? dark.primaryText : light.primaryText}
+                }
+                onclick={() => navigation.navigate('Settings')}
+                //onclick={() => updateTheme(theme === 'light' ? 'dark' : 'light')}
               />
-              <Text
-                style={[
-                  styles.text,
-                  {fontFamily: fonts.primary},
-                  theme === 'dark'
-                    ? darkTheme.primaryText
-                    : lightTheme.primaryText,
-                ]}>
-                Add Apps
-              </Text>
-            </TouchableOpacity>
-          )}
-        </View>
-        <View style={[styles.bottomBarWrapper]}>
-          <View style={[styles.bottomBar]}>
-            <View style={{justifyContent: 'flex-end'}}>
+            </View>
+          </View>
+          <View style={[styles.appList]}>
+            {apps.map((app, i) => (
               <TouchableOpacity
-                style={styles.appListItem}
-                onPress={hanldeTaskNavigate}>
+                onLongPress={handleLongPress}
+                onPress={() => _handleOpenApp(app.name)}
+                key={i}
+                style={styles.appListItem}>
+                {editMode && (
+                  <TouchableOpacity onPress={() => removeApp(app)}>
+                    <Ionicons
+                      name="md-remove-circle"
+                      size={ScreenHeight / 18}
+                      color={
+                        theme === 'dark' ? dark.primaryText : light.primaryText
+                      }
+                    />
+                  </TouchableOpacity>
+                )}
+                <Text
+                  style={[
+                    styles.text,
+                    editMode && {marginLeft: 8},
+                    theme === 'dark'
+                      ? darkTheme.primaryText
+                      : lightTheme.primaryText,
+                  ]}>
+                  {app.label}
+                </Text>
+              </TouchableOpacity>
+            ))}
+            {((apps?.length === 0 && !loading) ||
+              (editMode && apps?.length < 7)) && (
+              <TouchableOpacity
+                onPress={() => setAddAppSheet(true)}
+                style={styles.appListItem}>
                 <Ionicons
-                  name="arrow-back"
-                  size={ScreenHeight / 32}
+                  name="add"
+                  size={ScreenHeight / 18}
                   color={
                     theme === 'dark' ? dark.primaryText : light.primaryText
                   }
                 />
                 <Text
                   style={[
-                    styles.bottomText,
+                    styles.text,
+                    {fontFamily: fonts.primary},
                     theme === 'dark'
                       ? darkTheme.primaryText
                       : lightTheme.primaryText,
                   ]}>
-                  Manage Tasks
+                  Add Apps
                 </Text>
               </TouchableOpacity>
-            </View>
-            <View>
-              <TouchableOpacity
-                onPress={() => _handleOpenApp('com.android.dialer')}
-                style={styles.appListButton}>
-                <View style={{justifyContent: 'center', flexDirection: 'row'}}>
+            )}
+          </View>
+          <View style={[styles.bottomBarWrapper]}>
+            <View style={[styles.bottomBar]}>
+              <View style={{justifyContent: 'flex-end'}}>
+                <TouchableOpacity
+                  style={styles.appListItem}
+                  onPress={hanldeTaskNavigate}>
                   <Ionicons
-                    name="call-sharp"
+                    name="arrow-back"
                     size={ScreenHeight / 32}
                     color={
-                      theme === 'dark' ? dark.primaryText : dark.primaryText
+                      theme === 'dark' ? dark.primaryText : light.primaryText
                     }
                   />
-                </View>
-              </TouchableOpacity>
+                  <Text
+                    style={[
+                      styles.bottomText,
+                      theme === 'dark'
+                        ? darkTheme.primaryText
+                        : lightTheme.primaryText,
+                    ]}>
+                    Manage Tasks
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View>
+                <TouchableOpacity
+                  onPress={() => _handleOpenApp('com.android.dialer')}
+                  style={styles.appListButton}>
+                  <View
+                    style={{justifyContent: 'center', flexDirection: 'row'}}>
+                    <Ionicons
+                      name="call-sharp"
+                      size={ScreenHeight / 32}
+                      color={
+                        theme === 'dark' ? dark.primaryText : dark.primaryText
+                      }
+                    />
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
+        </TouchableOpacity>
       </SafeAreaView>
       <AddAppsSheet
         close={() => {
