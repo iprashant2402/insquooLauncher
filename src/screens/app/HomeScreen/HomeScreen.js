@@ -53,8 +53,8 @@ const HomeScreen = ({navigation}) => {
     const temp = await getStarredApps();
     if (temp) {
       setApps(temp);
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   React.useEffect(() => {
