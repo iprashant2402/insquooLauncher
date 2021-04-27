@@ -17,6 +17,7 @@ import java.util.HashMap;
 
 import javax.annotation.Nullable;
 
+import android.net.Uri;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -81,6 +82,13 @@ public class InstalledAppsModule extends ReactContextBaseJavaModule {
         }
         String appsFinalList = apps.toString();
         callBack.invoke(null, appsFinalList);
+    }
+    @ReactMethod
+    private void uninstallApp(String name){
+        Intent intent = new Intent(Intent.ACTION_DELETE);
+        intent.setData(Uri.parse(name));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        this.reactContext.startActivity(intent);
     }
 
     private List<String> getAllApps() {

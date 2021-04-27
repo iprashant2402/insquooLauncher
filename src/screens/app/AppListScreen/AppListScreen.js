@@ -8,6 +8,7 @@ import {
   ScrollView,
   SafeAreaView,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import {darkTheme, lightTheme} from '../../../colors/theme';
 import SearchInput from '../../../components/SearchInput/SearchInput';
@@ -16,15 +17,23 @@ import {InstalledApps} from '../../../utils/InstalledApps';
 import styles from './AppListScreen.styles';
 import colors from '../../../colors/colors';
 import {ScreenWidth} from '../../../utils/Dimensions';
+import PopupMenu from '../../../components/PopupMenu/PopupMenu';
 
 const AppListScreen = ({navigation}) => {
   const themeContext = React.useContext(ThemeContext);
   const {theme} = themeContext;
+  const isFocused = useIsFocused();
+
   const [apps, setApps] = React.useState([]);
+
   const [search, setSearch] = React.useState(null);
   const [searchResults, setSearchResults] = React.useState([]);
+
   const [loading, setLoading] = React.useState(true);
-  const isFocused = useIsFocused();
+
+  const [selectedApp, setSelectedApp] = React.useState(null);
+  const [showDialog, setShowDialog] = React.useState(false);
+  const [showConfirmation, setShowConfirmation] = React.useState(false);
 
   const initializeApps = () => {
     InstalledApps.getApps((error, appListJson) => {
@@ -43,6 +52,10 @@ const AppListScreen = ({navigation}) => {
       }
       setLoading(false);
     });
+  };
+
+  const uninstallApp = app => {
+    InstalledApps.uninstallApp(`package:${app?.name}`);
   };
 
   React.useEffect(() => {
@@ -73,6 +86,7 @@ const AppListScreen = ({navigation}) => {
       style={[
         styles.container,
         theme === 'dark' ? darkTheme.background : lightTheme.background,
+        (showDialog || showConfirmation) && {opacity: 0.1},
       ]}>
       <SearchInput theme={theme} onChange={text => setSearch(text)} />
       <ScrollView contentContainerStyle={styles.paddingBottom}>
@@ -96,6 +110,10 @@ const AppListScreen = ({navigation}) => {
           ? apps.map((app, i) => (
               <TouchableOpacity
                 key={i}
+                onLongPress={() => {
+                  setSelectedApp(app);
+                  setShowDialog(true);
+                }}
                 onPress={() => _handleOnPress(app)}
                 style={styles.appListItem}>
                 <Image
@@ -136,6 +154,26 @@ const AppListScreen = ({navigation}) => {
               </TouchableOpacity>
             ))}
       </ScrollView>
+      <PopupMenu
+        options={[
+          {
+            text: `Hide ${selectedApp?.label}`,
+            onclick: () => {
+              return true;
+            },
+          },
+          {
+            text: `Uninstall ${selectedApp?.label}`,
+            onclick: () => {
+              setShowDialog(false);
+              uninstallApp(selectedApp);
+            },
+          },
+        ]}
+        theme={theme}
+        close={() => setShowDialog(false)}
+        modalVisible={showDialog}
+      />
     </SafeAreaView>
   );
 };
