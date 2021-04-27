@@ -2,38 +2,44 @@ import 'react-native-gesture-handler';
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import Routes from './src/routes/routes';
-import {ThemeProvider} from './src/context/auth/ThemeContext';
-import {getTheme, storeTheme} from './src/utils/storage';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import {SettingsProvider} from './src/context/auth/SettingsContext';
+import {getSettings, getTheme, storeSettings, storeTheme} from './src/utils/storage';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 export default function App() {
-  const [theme, setTheme] = React.useState('dark');
+  const [settings, setSettings] = React.useState({
+    theme: 'dark',
+    showTime: false,
+    showDate: true,
+    showAppIcons: true,
+    showStatusBar: true,
+  });
   const [loading, setLoading] = React.useState(true);
-  const updateTheme = data => {
-    setTheme(prev => {
-      storeTheme(data);
+  const updateSettings = data => {
+    setSettings(prev => {
+      storeSettings(data);
       return data;
     });
   };
-  const fetchTheme = async () => {
-    const res = await getTheme();
+  const fetchSettings = async () => {
+    const res = await getSettings();
     if (res) {
-      setTheme(res);
+      setSettings(res);
     }
     setLoading(false);
   };
   React.useEffect(() => {
-    fetchTheme();
+    fetchSettings();
   }, []);
   return (
-    <ThemeProvider
+    <SettingsProvider
       value={{
-        theme,
-        updateTheme,
+        settings,
+        updateSettings,
       }}>
       <SafeAreaProvider>
         <NavigationContainer>{!loading && <Routes />}</NavigationContainer>
       </SafeAreaProvider>
-    </ThemeProvider>
+    </SettingsProvider>
   );
 }

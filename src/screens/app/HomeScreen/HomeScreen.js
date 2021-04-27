@@ -8,8 +8,8 @@ import {
 } from 'react-native';
 import Button from '../../../components/Button/Button';
 import styles from './HomeScreen.styles';
-import {ThemeContext} from '../../../context/auth/ThemeContext';
-import Icon from 'react-native-vector-icons/Entypo';
+import {SettingsContext} from '../../../context/auth/SettingsContext';
+import Icon from 'react-native-vector-icons/Ionicons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import colors, {dark, fonts, light} from '../../../colors/colors';
 import {
@@ -25,8 +25,9 @@ import {getStarredApps, storeStarredApps} from '../../../utils/storage';
 import {getDateTime} from '../../../utils/dateTime';
 
 const HomeScreen = ({navigation}) => {
-  const themeContext = React.useContext(ThemeContext);
-  const {theme, updateTheme} = themeContext;
+  const settingsContext = React.useContext(SettingsContext);
+  const {settings} = settingsContext;
+  const {theme} = settings;
   const [editMode, setEditMode] = React.useState(false);
   const [addAppSheet, setAddAppSheet] = React.useState(false);
   const [time, setTime] = React.useState(null);
@@ -118,30 +119,34 @@ const HomeScreen = ({navigation}) => {
           theme === 'dark' ? darkTheme.background : lightTheme.background,
         ]}>
         <StatusBar
-          hidden={false}
+          hidden={!settings?.showStatusBar}
           barStyle={theme === 'dark' ? 'light-content' : 'dark-content'}
           backgroundColor={theme === 'dark' ? '#000' : light.background}
         />
         <View style={[styles.clockContainer]}>
           <View>
-            {/* <Text
-              style={[
-                styles.time,
-                theme === 'dark'
-                  ? darkTheme.primaryText
-                  : lightTheme.primaryText,
-              ]}>
-              {time}
-            </Text> */}
-            <Text
-              style={[
-                styles.date,
-                theme === 'dark'
-                  ? darkTheme.primaryText
-                  : lightTheme.primaryText,
-              ]}>
-              {date}
-            </Text>
+            {settings?.showTime && (
+              <Text
+                style={[
+                  styles.time,
+                  theme === 'dark'
+                    ? darkTheme.primaryText
+                    : lightTheme.primaryText,
+                ]}>
+                {time}
+              </Text>
+            )}
+            {settings?.showDate && (
+              <Text
+                style={[
+                  styles.date,
+                  theme === 'dark'
+                    ? darkTheme.primaryText
+                    : lightTheme.primaryText,
+                ]}>
+                {date}
+              </Text>
+            )}
           </View>
           <View>
             <Button
@@ -149,14 +154,16 @@ const HomeScreen = ({navigation}) => {
               theme={theme}
               icon={
                 <Icon
-                  name={theme === 'dark' ? 'light-down' : 'light-up'}
+                  //name={theme === 'dark' ? 'light-down' : 'light-up'}
+                  name="ios-ellipsis-horizontal"
                   size={30}
                   color={
                     theme === 'dark' ? colors.white : colors.primary_background
                   }
                 />
               }
-              onclick={() => updateTheme(theme === 'light' ? 'dark' : 'light')}
+              onclick={() => navigation.navigate('Settings')}
+              //onclick={() => updateTheme(theme === 'light' ? 'dark' : 'light')}
             />
           </View>
         </View>

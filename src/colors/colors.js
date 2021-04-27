@@ -3,6 +3,7 @@ const colors = {
   google_red: '#DB4437',
   primary: '#487EB0',
   white: '#FFFFFF',
+  success: '#4BB543',
 };
 
 export const dark = {

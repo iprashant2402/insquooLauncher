@@ -107,7 +107,7 @@ const AddAppsSheet = ({
             Select upto 7 apps to add to Home.
           </Text>
         </View>
-        <ScrollView style={styles.appList}>
+        <ScrollView showsVerticalScrollIndicator={false} style={styles.appList}>
           {apps.map((app, i) => (
             <View
               key={i}

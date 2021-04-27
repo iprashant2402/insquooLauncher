@@ -17,6 +17,10 @@ const styles = StyleSheet.create({
     fontFamily: fonts.primary_semibold,
     fontSize: ScreenWidth / 28,
   },
+  bigText: {
+    fontFamily: fonts.primary,
+    fontSize: ScreenWidth / 18,
+  },
   appListItem: {
     padding: 10,
     flexDirection: 'row',

@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import {darkTheme, lightTheme} from '../../../colors/theme';
 import SearchInput from '../../../components/SearchInput/SearchInput';
-import {ThemeContext} from '../../../context/auth/ThemeContext';
+import {SettingsContext} from '../../../context/auth/SettingsContext';
 import {InstalledApps} from '../../../utils/InstalledApps';
 import styles from './AppListScreen.styles';
 import colors from '../../../colors/colors';
@@ -20,8 +20,9 @@ import {ScreenWidth} from '../../../utils/Dimensions';
 import PopupMenu from '../../../components/PopupMenu/PopupMenu';
 
 const AppListScreen = ({navigation}) => {
-  const themeContext = React.useContext(ThemeContext);
-  const {theme} = themeContext;
+  const settingsContext = React.useContext(SettingsContext);
+  const {settings} = settingsContext;
+  const {theme} = settings;
   const isFocused = useIsFocused();
 
   const [apps, setApps] = React.useState([]);
@@ -60,9 +61,9 @@ const AppListScreen = ({navigation}) => {
 
   React.useEffect(() => {
     if (search && search.length > 0) {
-      const condition = new RegExp(search);
+      const condition = new RegExp(search?.toLowerCase());
       const res = apps.filter(el => {
-        return condition.test(el.label);
+        return condition.test(el.label?.toLowerCase());
       });
       setSearchResults(res);
     } else {
@@ -72,7 +73,6 @@ const AppListScreen = ({navigation}) => {
 
   React.useEffect(() => {
     if (isFocused) {
-      console.log('isFocusedRun');
       initializeApps();
     }
   }, [isFocused]);
@@ -89,7 +89,10 @@ const AppListScreen = ({navigation}) => {
         (showDialog || showConfirmation) && {opacity: 0.1},
       ]}>
       <SearchInput theme={theme} onChange={text => setSearch(text)} />
-      <ScrollView contentContainerStyle={styles.paddingBottom}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.paddingBottom}
+        keyboardShouldPersistTaps="handled">
         {loading && (
           <View
             style={{
@@ -116,17 +119,20 @@ const AppListScreen = ({navigation}) => {
                 }}
                 onPress={() => _handleOnPress(app)}
                 style={styles.appListItem}>
-                <Image
-                  style={styles.icon}
-                  resizeMode={'contain'}
-                  source={{uri: 'data:image/png;base64,' + app.icon}}
-                />
+                {settings?.showAppIcons && (
+                  <Image
+                    style={styles.icon}
+                    resizeMode={'contain'}
+                    source={{uri: 'data:image/png;base64,' + app.icon}}
+                  />
+                )}
                 <Text
                   style={[
                     styles.text,
                     theme === 'dark'
                       ? darkTheme.primaryText
                       : lightTheme.primaryText,
+                    !settings?.showAppIcons && styles.bigText,
                   ]}>
                   {app.label}
                 </Text>
@@ -135,19 +141,26 @@ const AppListScreen = ({navigation}) => {
           : searchResults.map((app, i) => (
               <TouchableOpacity
                 key={i}
+                onLongPress={() => {
+                  setSelectedApp(app);
+                  setShowDialog(true);
+                }}
                 onPress={() => _handleOnPress(app)}
                 style={styles.appListItem}>
-                <Image
-                  style={styles.icon}
-                  resizeMode={'contain'}
-                  source={{uri: 'data:image/png;base64,' + app.icon}}
-                />
+                {settings?.showAppIcons && (
+                  <Image
+                    style={styles.icon}
+                    resizeMode={'contain'}
+                    source={{uri: 'data:image/png;base64,' + app.icon}}
+                  />
+                )}
                 <Text
                   style={[
                     styles.text,
                     theme === 'dark'
                       ? darkTheme.primaryText
                       : lightTheme.primaryText,
+                    !settings?.showAppIcons && styles.bigText,
                   ]}>
                   {app.label}
                 </Text>
@@ -156,12 +169,12 @@ const AppListScreen = ({navigation}) => {
       </ScrollView>
       <PopupMenu
         options={[
-          {
-            text: `Hide ${selectedApp?.label}`,
-            onclick: () => {
-              return true;
-            },
-          },
+          // {
+          //   text: `Hide ${selectedApp?.label}`,
+          //   onclick: () => {
+          //     return true;
+          //   },
+          // },
           {
             text: `Uninstall ${selectedApp?.label}`,
             onclick: () => {
@@ -171,7 +184,10 @@ const AppListScreen = ({navigation}) => {
           },
         ]}
         theme={theme}
-        close={() => setShowDialog(false)}
+        close={() => {
+          setSelectedApp(null);
+          setShowDialog(false);
+        }}
         modalVisible={showDialog}
       />
     </SafeAreaView>

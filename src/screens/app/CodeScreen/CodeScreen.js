@@ -1,7 +1,13 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, ScrollView, SafeAreaView} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  SafeAreaView,
+} from 'react-native';
 import {darkTheme, lightTheme} from '../../../colors/theme';
-import {ThemeContext} from '../../../context/auth/ThemeContext';
+import {SettingsContext} from '../../../context/auth/SettingsContext';
 import {ScreenHeight} from '../../../utils/Dimensions';
 import styles from './CodeScreen.styles';
 import AddNewTask from './components/AddNewTask';
@@ -35,8 +41,9 @@ const shouldGroupByPriority = (t1, t2) => {
 };
 
 const CodeScreen = () => {
-  const themeContext = React.useContext(ThemeContext);
-  const {theme, updateTheme} = themeContext;
+  const settingsContext = React.useContext(SettingsContext);
+  const {settings} = settingsContext;
+  const {theme} = settings;
   const [activeTab, setActiveTab] = React.useState('tasks');
   const [newTaskModal, setNewTaskModal] = React.useState(false);
   const [newTitle, setNewTitle] = React.useState(null);
@@ -152,7 +159,7 @@ const CodeScreen = () => {
           </View>
         </TouchableOpacity>
       </View>
-      <ScrollView style={[styles.taskList, newTaskModal && {opacity: 0.2}]}>
+      <ScrollView showsVerticalScrollIndicator={false} style={[styles.taskList, newTaskModal && {opacity: 0.2}]}>
         {tasks.map((task, i) => (
           <Task
             theme={theme}

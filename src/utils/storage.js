@@ -67,3 +67,26 @@ export const getTasks = async () => {
     return null;
   }
 };
+
+export const storeSettings = async settings => {
+  try {
+    const temp = JSON.stringify(settings);
+    const res = await AsyncStorage.setItem('@settings', temp);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+export const getSettings = async () => {
+  try {
+    const res = await AsyncStorage.getItem('@settings');
+    if (res !== null) {
+      return JSON.parse(res);
+    } else {
+      return null;
+    }
+  } catch (e) {
+    return null;
+  }
+};
