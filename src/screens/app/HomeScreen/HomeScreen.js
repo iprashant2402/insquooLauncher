@@ -35,6 +35,7 @@ const HomeScreen = ({navigation}) => {
   const [apps, setApps] = React.useState([]);
   const [fullAppList, setFullAppList] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
+  const [dialerApp, setDialerApp] = React.useState(null);
   const _handleOpenApp = app => {
     if (!editMode) {
       InstalledApps.launchApplication(app);
@@ -60,6 +61,7 @@ const HomeScreen = ({navigation}) => {
   React.useEffect(() => {
     fetchApps();
     getApps();
+    getDialerApp();
   }, []);
 
   React.useEffect(() => {
@@ -93,6 +95,14 @@ const HomeScreen = ({navigation}) => {
           return 0;
         });
         setFullAppList(temp);
+      }
+    });
+  };
+
+  const getDialerApp = () => {
+    InstalledApps.getDefaultDialer((error, dialer) => {
+      if(dialer) {
+        setDialerApp(dialer);
       }
     });
   };
@@ -255,7 +265,7 @@ const HomeScreen = ({navigation}) => {
               </View>
               <View>
                 <TouchableOpacity
-                  onPress={() => _handleOpenApp('com.android.dialer')}
+                  onPress={() => _handleOpenApp(dialerApp)}
                   style={styles.appListButton}>
                   <View
                     style={{justifyContent: 'center', flexDirection: 'row'}}>

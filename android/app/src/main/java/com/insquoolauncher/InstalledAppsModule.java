@@ -17,6 +17,8 @@ import java.util.HashMap;
 
 import javax.annotation.Nullable;
 
+import android.content.pm.ActivityInfo;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -89,6 +91,15 @@ public class InstalledAppsModule extends ReactContextBaseJavaModule {
         intent.setData(Uri.parse(name));
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         this.reactContext.startActivity(intent);
+    }
+
+    @ReactMethod
+    private void getDefaultDialer(Callback callback) {
+        Intent mainIntent = new Intent(Intent.ACTION_DIAL, null);
+        mainIntent.addCategory(Intent.CATEGORY_DEFAULT);
+        List<ResolveInfo> pkgAppsList = this.reactContext.getPackageManager().queryIntentActivities(mainIntent, 0);
+        ActivityInfo info = pkgAppsList.get(0).activityInfo;
+        callback.invoke(null, info.packageName);
     }
 
     private List<String> getAllApps() {
